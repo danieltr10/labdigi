@@ -4,7 +4,8 @@ use IEEE.std_logic_unsigned.all;
 entity Registrador is
  port (
  CLK : in STD_LOGIC;
- estado : in STD_LOGIC_VECTOR(1 downto 0);
+ DESLOCA : in STD_LOGIC;
+ REGISTRA : in STD_LOGIC;
  DADOS : in STD_LOGIC_VECTOR (6 downto 0); -- data in
  SERIAL : out STD_LOGIC; -- data out
  SERIAL_C : out STD_LOGIC; -- data out
@@ -19,12 +20,12 @@ begin
 	process (CLK, ISERIAL, estado)
 	begin
 		if (CLK'event and CLK='1') then
-			if (estado = "01") then
+			if (REGISTRA) then
 				ISERIAL <= '0' & DADOS & (DADOS(0) xor DADOS(1)xor DADOS(2)xor DADOS(3)xor DADOS(4)xor DADOS(5)xor DADOS(6));
 				ISERIAL_D <= '0' & DADOS & (DADOS(0) xor DADOS(1)xor DADOS(2)xor DADOS(3)xor DADOS(4)xor DADOS(5)xor DADOS(6));
 				SERIAL <= '1';
 				SERIAL_C <= '1';
-			elsif (estado = "10") then
+			elsif (DESLOCA) then
 				SERIAL <= ISERIAL(8);
 				SERIAL_C <= ISERIAL(8);
 				ISERIAL <= ISERIAL(7 downto 0) & '1';
