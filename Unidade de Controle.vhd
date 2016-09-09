@@ -10,11 +10,12 @@ ENTITY unidade_controle IS
       clk      : IN   STD_LOGIC;
       partida  : IN   STD_LOGIC;
       fim	   : IN STD_LOGIC;
+	  reset    : IN STD_LOGIC;
 
       conta   : OUT STD_LOGIC;
       desloca   : OUT STD_LOGIC;
       zera   : OUT STD_LOGIC;
-      registra   : OUT STD_LOGIC;
+      registra   : OUT STD_LOGIC
       );
 END unidade_controle;
 
@@ -32,11 +33,15 @@ BEGIN
 		partida_x <= partida and (not partidaz);
 	END PROCESS;
 
-   PROCESS (clk)
+   PROCESS (clk, reset)
    BEGIN
-      IF (clk'EVENT AND clk = '1' AND partida_x = '1') THEN
-         CASE estado IS
-
+      IF (clk'EVENT AND clk = '1' AND partida_x = '1') THEN	  
+		IF (reset = '1') then
+			estado <= s0;
+		end	
+	  
+        CASE estado IS
+			
             WHEN s0 =>
                IF (partida_x) = '1' THEN
                   estado <= s1;
@@ -57,7 +62,7 @@ BEGIN
             WHEN s3 => 
                   estado <= s0;
 
-         END CASE;
+        END CASE;
       END IF;
    END PROCESS;
 
