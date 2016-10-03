@@ -62,27 +62,27 @@ begin
             when s0 =>
                 pronto <= '1';
                 zera <= '1';
-                registra <= '0'
+                registra <= '0';
                 conta <= '0';
             when s1 =>
                 pronto <= '0';
                 zera <= '0';
-                registra <= '0'
+                registra <= '0';
                 conta <= '1';
             when s2 =>
                 pronto <= '0';
                 zera <= '0';
-                registra <= '1'
+                registra <= '1';
                 conta <= '1';
             when s3 =>
                 pronto <= '0';
                 zera <= '0';
-                registra <= '0'
+                registra <= '0';
                 conta <= '1';
             when s4 =>
                 pronto <= '0';
                 zera <= '1';
-                registra <= '0'
+                registra <= '0';
                 conta <= '0';
         end case;
     end process;
