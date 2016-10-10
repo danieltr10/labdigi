@@ -13,18 +13,18 @@ entity Registrador is
 end Registrador;
 
 architecture estrutural of Registrador is
-    signal ISERIAL : STD_LOGIC_VECTOR (7 downto 0);
+    signal ISERIAL : STD_LOGIC_VECTOR (9 downto 0);
 
 begin
     process (clk, ISERIAL, desloca, registra)
     begin
         if (clk'event and clk='1') then
             if (registra = '1') then
-                ISERIAL <= '0' & dados;
+                ISERIAL <= '0' & dados & '1';
                 serial <= '1';
             elsif (desloca = '1') then
-                serial <= ISERIAL(8);
-                ISERIAL <= ISERIAL(7 downto 0) & '1';
+                serial <= ISERIAL(9);
+                ISERIAL <= ISERIAL(8 downto 0) & '1';
             else
                 serial <= '1';
             end if;

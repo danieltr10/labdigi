@@ -6,9 +6,9 @@ entity RecepcaoSerial is
     port (
         CLK : in  std_logic;
         RESET : in  std_logic;
-        SERIAL_IN : in std_logic;
+        ENTRADASERIAL : in std_logic;
 
-        DADOS : out std_logic;
+        DADOS : out std_logic_vector(9 downto 0);
         PRONTO : out std_logic
 
     );
@@ -22,7 +22,7 @@ architecture rtl of RecepcaoSerial is
                 registra : in std_logic;
                 serial : in std_logic;
 
-                dados : out std_logic
+                dados : out std_logic_vector(9 downto 0)
         );
     end component;
 
@@ -61,7 +61,7 @@ architecture rtl of RecepcaoSerial is
 begin
 
     UC : unidadeControleRecepcao port map (clk => CLK,
-                                           serialStartBit=> SERIAL_IN,
+                                           serialStartBit=> ENTRADASERIAL,
                                            prontoConta4 => CONTA4,
                                            prontoConta8 => CONTA8,
                                            fim => FIM,
@@ -83,8 +83,9 @@ begin
     );
 
     Registrador : registradorRecepcao port map(clk => CLK,
+															  reset => RESET,
                                                registra => REGISTRA,
-                                               serial => SERIAL_IN,
+                                               serial => ENTRADASERIAL,
                                                
                                                dados => DADOS
     );

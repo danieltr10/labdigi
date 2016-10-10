@@ -30,7 +30,7 @@ begin
             conta4 <= '0';
             conta8 <= '0';
             var_fim <= '0';
-        elsif (clk'event and clk'1') then
+        elsif (clk'event and clk='1') then
             if (conta = '1') then
                 if (contador4 = 3) then
                     conta4 <= '1';
