@@ -23,12 +23,12 @@ entity UnidadeControleUART is
 end entity;
 
 architecture rtl of UnidadeControleUART is
-    type estado_transmissao is (t0, t0, t2);
+    type estado_transmissao is (t0, t1);
     type estado_recepcao is (r0, r1, r2); 
     signal estadoTransmissao : estado_transmissao := t0;
     signal estadoRecepcao : estado_recepcao := r0;
     
-    signal enviar_aux : std_logic;
+    signal partida_aux : std_logic;
     signal borderPartida : std_logic;
 
 begin
@@ -72,26 +72,23 @@ begin
         end case;
     end process;
     
-    process (CLK, LIGA, RESET, CD)
+    process (CLK, RESET, PRONTO_RECEPCAO)
     begin
-        if (LIGA = '0') then
+        if (RESET = '1') then
             estadoRecepcao <= r0;
-        elsif (RESET = '1') then
-            estadoRecepcao <= r1;
-        elsif (estadoTransmissao = t0) then
-            estadoRecepcao <= r1;
         else
             if (CLK'event and CLK='1') then
                 case estadoRecepcao is
                     when r0 =>
+                        if (PRONTO_RECEPCAO = '1') then
+                            estadoRecepcao <= r1;
+                        end if;
                     when r1 =>
-                        if (CD = '1') then
+                        if (RECEBE_DADO = '1') then
                             estadoRecepcao <= r2;
                         end if;
                     when r2 =>
-                        if (CD = '0') then
-                            estadoRecepcao <= r1;
-                        end if;
+                        estadoRecepcao <= r0;
                 end case;
             end if;
         end if;
@@ -101,11 +98,14 @@ begin
     begin
         case estadoRecepcao is
             when r0 =>
-                ENABLERECEPCAO <= '0';
+                RECEBE_DADO_SIGNAL <= '0';
+                TEM_DADO_REC <= '0';
             when r1 =>
-                ENABLERECEPCAO <= '0';
+                RECEBE_DADO_SIGNAL <= '0';
+                TEM_DADO_REC <= '1';
             when r2 =>
-                ENABLERECEPCAO <= '1';
+                RECEBE_DADO_SIGNAL <= '1';
+                TEM_DADO_REC <= '0';
         end case;
     end process;
     
