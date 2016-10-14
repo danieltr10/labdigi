@@ -16,6 +16,7 @@ ENTITY unidade_controle IS
         desloca   : OUT STD_LOGIC;
         zera   : OUT STD_LOGIC;
         registra   : OUT STD_LOGIC;
+        estado_atual  : OUT STD_LOGIC_VECTOR(1 downto 0);
         pronto : OUT STD_LOGIC
     );
 END unidade_controle;
@@ -34,11 +35,12 @@ BEGIN
         partida_x <= partida and (not partidaz);
     END PROCESS;
 
-    PROCESS (clk, reset)
+    PROCESS (clk, reset, partida)
     BEGIN
-        IF (clk'EVENT AND clk = '1' AND partida_x = '1') THEN
+        IF (clk'EVENT AND clk = '1') THEN
             IF (reset = '1') then
                 estado <= s0;
+                estado_atual <= "00";
             end    IF;
 
             CASE estado IS
@@ -46,22 +48,28 @@ BEGIN
                 WHEN s0 =>
                     IF (partida_x) = '1' THEN
                         estado <= s1;
+						estado_atual <= "01";
                     ELSE
                         estado <= s0;
+                        estado_atual <= "00";
                     END IF;
 
                 WHEN s1 =>
                     estado <= s2;
+                    estado_atual <= "10";
 
                 WHEN s2 =>
                     IF fim = '0' THEN
                         estado <= s2;
+                        estado_atual <= "10";
                     ELSE
                         estado <= s3;
+                        estado_atual <= "11";
                     END IF;
 
                 WHEN s3 =>
                     estado <= s0;
+                    estado_atual <= "00";
 
             END CASE;
         END IF;
@@ -75,7 +83,7 @@ BEGIN
                 registra <= '0';
                 desloca <= '0';
                 conta <= '0';
-                pronto <= '1';
+                pronto <= '0';
 
             WHEN s1 =>
                 zera <= '0';
@@ -87,7 +95,7 @@ BEGIN
             WHEN s2 =>
                 zera <= '0';
                 registra <= '0';
-                desloca <= '0';
+                desloca <= '1';
                 conta <= '1';
                 pronto <= '0';
 
@@ -96,7 +104,7 @@ BEGIN
                 registra <= '0';
                 desloca <= '0';
                 conta <= '0';
-                pronto <= '0';
+                pronto <= '1';
 
         END CASE;
     END PROCESS;

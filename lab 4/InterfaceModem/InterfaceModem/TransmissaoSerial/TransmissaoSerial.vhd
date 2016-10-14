@@ -12,6 +12,7 @@ entity TransmissaoSerial is
         PARTIDA :  in std_logic;
         
         DADOSSERIAL : out std_logic;
+        ESTADO_UC: out std_logic_vector(1 downto 0);
         PRONTO : out std_logic
     );
 end TransmissaoSerial;
@@ -27,6 +28,7 @@ architecture estrutural of TransmissaoSerial is
         desloca   : OUT STD_LOGIC;
         zera   : OUT STD_LOGIC;
         registra   : OUT STD_LOGIC;
+        estado_atual : OUT STD_LOGIC_VECTOR(1 downto 0);
         pronto : OUT STD_LOGIC
         );
     end component;
@@ -56,7 +58,7 @@ architecture estrutural of TransmissaoSerial is
 
 begin
 
-    controle: unidade_controle port map (clk => CLK, partida => PARTIDA, fim => fim_z, reset => RESET, conta => conta_z, desloca => desloca_z, zera => zera_z, registra => registra_z, pronto => PRONTO);
+    controle: unidade_controle port map (clk => CLK, partida => PARTIDA, fim => fim_z, reset => RESET, conta => conta_z, desloca => desloca_z, zera => zera_z, registra => registra_z, estado_atual => ESTADO_UC, pronto => PRONTO);
     mod_contador: contador port map (clk => CLK, conta => conta_z, zera => zera_z, fim => fim_z);
     mod_reg: Registrador port map (clk => CLK, desloca => desloca_z, registra => registra_z, dados => DADOS, serial => DADOSSERIAL);
 

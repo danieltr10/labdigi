@@ -19,6 +19,9 @@ entity InterfaceModem is
         LEDCTS : out std_logic;
         TD : out std_logic;
         RTS : out std_logic;   
+        PARTIDA_DEPURACAO : out std_logic; 
+        SERIAL_DEPURACAO : out std_logic;   
+        ESTADO_UC_TRANSMISSAO : out std_logic_VECTOR(1 DOWNTO 0);   
         DTR : out std_logic
     );
 end entity;
@@ -56,6 +59,7 @@ architecture rtl of InterfaceModem is
                 partida : in std_logic;
                 
                 dadosSerial : out std_logic;
+                ESTADO_UC : out std_logic_vector(1 downto 0);
                 pronto : out std_logic
         );
     end component;
@@ -74,8 +78,13 @@ architecture rtl of InterfaceModem is
     signal prontoT : std_logic;
     signal clockT: std_logic;
     signal enableR : std_logic;
+    SIGNAL IDADOS : STD_LOGIC;
 begin
     
+	PARTIDA_DEPURACAO <= IPARTIDA;
+	SERIAL_DEPURACAO <= IDADOS;
+	TD <= IDADOS;
+	
     UC : UnidadeControleInterface port map (clk => CLK,
                                             reset => RESET,
                                             liga => LIGA,
@@ -95,8 +104,9 @@ begin
                                               reset => RESET,
                                               dados => DADOS,
                                               partida => IPARTIDA,
-                                              
-                                              dadosSerial => TD,
+                                          
+                                              dadosSerial => IDADOS,
+                                              ESTADO_UC => ESTADO_UC_TRANSMISSAO,
                                               pronto => prontoT
     );
     
