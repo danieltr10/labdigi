@@ -2,22 +2,22 @@ library IEEE;
     use IEEE.std_logic_1164.all;
     use IEEE.numeric_std.all;
 
-entity ClockDivider is
+entity TickDivider is
     port (
-        CLKIN : in  std_logic;
-        CLKOUT : out  std_logic
+        TICKIN : in  std_logic;
+        TICKOUT : out  std_logic
     );
 end entity;
 
-architecture rtl of ClockDivider is
+architecture rtl of TickDivider is
     signal clock : std_logic := '0';
 begin
-    process (CLKIN)
-        variable contador : integer range 0 to 7;
+    process (TICKIN)
+        variable contador : integer range 0 to 3;
     begin
-        if (CLKIN'event and CLKIN='1') then
-            if (contador = 7) then
-                CLKOUT <= clock;
+        if (TICKIN'event and TICKIN='1') then
+            if (contador = 3) then
+                TICKOUT <= clock;
                 clock <= not clock;
                 contador := 0;
             else 

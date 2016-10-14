@@ -7,10 +7,10 @@ entity RecepcaoSerial is
         CLK : in  std_logic;
         RESET : in  std_logic;
         ENTRADASERIAL : in std_logic;
+        RECEBEDADO : in std_logic;
 
         DADOS : out std_logic_vector(9 downto 0);
         PRONTO : out std_logic
-
     );
 end entity;
 
@@ -44,6 +44,7 @@ architecture rtl of RecepcaoSerial is
                 prontoConta8 : in std_logic;
                 fim : in std_logic;
                 reset : in std_logic;
+                recebeDado : in std_logic;
 
                 pronto : out std_logic;
                 registra : out std_logic;
@@ -66,6 +67,7 @@ begin
                                            prontoConta8 => CONTA8,
                                            fim => FIM,
                                            reset => RESET,
+                                           recebeDado => RECEBEDADO,
                                            
                                            pronto => PRONTO,
                                            conta => CONTA_UC,

@@ -10,6 +10,7 @@ entity unidadeControleRecepcao is
         prontoConta8 : in std_logic;
         fim : in std_logic; 
         reset: in  std_logic;
+        recebeDado: in std_logic;
         
         pronto : out std_logic;
         conta : out std_logic;
@@ -48,7 +49,9 @@ begin
                             estado <= s2;
                         end if;
                     when s4 =>
-                        estado <= s0;
+                        if (recebeDado = '1') then
+                            estado <= s0;
+                        end if;
                 end case;
             elsif (serialStartBit = '0') then
                 estado <= s1;
@@ -60,7 +63,7 @@ begin
     begin
         case estado is
             when s0 =>
-                pronto <= '1';
+                pronto <= '0';
                 zera <= '1';
                 registra <= '0';
                 conta <= '0';
@@ -80,8 +83,8 @@ begin
                 registra <= '0';
                 conta <= '1';
             when s4 =>
-                pronto <= '0';
-                zera <= '1';
+                pronto <= '1';
+                zera <= '0';
                 registra <= '0';
                 conta <= '0';
         end case;

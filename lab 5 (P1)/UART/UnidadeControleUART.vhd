@@ -6,66 +6,54 @@ entity UnidadeControleUART is
     port (
         CLK : in  std_logic;
         RESET : in  std_logic;
-        LIGA : in std_logic;
-        ENVIAR : in std_logic;
-        CD : in std_logic;
-        CTS : in std_logic;
-        PRONTOTRANSMISSAO : in std_logic;
-
-        DTR : out std_logic;
-        RTS : out std_logic;
-        PARTIDA : out std_logic;
-        ENABLERECEPCAO : out std_logic
+        
+        -- Recepcao
+        RECEBE_DADO : in std_logic;
+        PRONTO_RECEPCAO : in std_logic;
+        TEM_DADO_REC : out std_logic;
+        RECEBE_DADO_SIGNAL : out std_logic;
+        
+        -- Transmissao
+        PRONTO_TRANSMISSAO : in std_logic;
+        TRANSMITE_DADO : in std_logic;
+        TRANSM_ANDAMENTO : out std_logic;
+        PARTIDA : out std_logic
+        
     );
 end entity;
 
 architecture rtl of UnidadeControleUART is
-    type estado_transmissao is (t0, t1, t2, t3);
+    type estado_transmissao is (t0, t0, t2);
     type estado_recepcao is (r0, r1, r2); 
     signal estadoTransmissao : estado_transmissao := t0;
     signal estadoRecepcao : estado_recepcao := r0;
     
     signal enviar_aux : std_logic;
-    signal borderEnviar : std_logic;
+    signal borderPartida : std_logic;
 
 begin
-    process (CLK, ENVIAR)
+    process (CLK, TRANSMITE_DADO)
     begin
-        borderEnviar <= ENVIAR and (not enviar_aux);
+        borderPartida <= TRANSMITE_DADO and (not partida_aux);
         if (CLK'event and CLK = '1') then
-            enviar_aux <= ENVIAR;
+            partida_aux <= TRANSMITE_DADO;
         end if;
     end process;
     
-    process (LIGA) 
+    process (CLK, RESET, PRONTO_TRANSMISSAO, estadoTransmissao)
     begin
-        DTR <= LIGA;
-    end process;
-    
-    process (CLK, LIGA, RESET, ENVIAR, PRONTOTRANSMISSAO, CTS, estadoTransmissao)
-    begin
-        if (LIGA = '0') then
+        if (RESET = '1') then
             estadoTransmissao <= t0;
-        elsif (RESET = '1') then
-            estadoTransmissao <= t1;
-        elsif (estadoTransmissao = t0) then
-            estadoTransmissao <= t1;
         else
             if (CLK'event and CLK='1') then
                 case estadoTransmissao is
-            
                     when t0 =>
-                    when t1 =>
-                        if (borderEnviar = '1') then
-                            estadoTransmissao <= t2;
-                        end if;
-                    when t2 =>
-                        if (CTS = '1') then
-                            estadoTransmissao <= t3;
-                        end if;
-                    when t3 =>
-                        if (PRONTOTRANSMISSAO = '1') then
+                        if (borderPartida = '1') then
                             estadoTransmissao <= t1;
+                        end if;
+                    when t1 =>
+                        if (PRONTO_TRANSMISSAO = '1') then
+                            estadoTransmissao <= t0;
                         end if;
                 end case;
             end if;
@@ -76,16 +64,10 @@ begin
     begin
         case estadoTransmissao is
             when t0 =>
-                RTS <= '0';
+				TRANSM_ANDAMENTO <= '0';
                 PARTIDA <= '0';
             when t1 =>
-                RTS <= '0';
-                PARTIDA <= '0';
-            when t2 =>
-                RTS <= '1';
-                PARTIDA <= '0';
-            when t3 =>
-                RTS <= '1';
+				TRANSM_ANDAMENTO <= '1';
                 PARTIDA <= '1';
         end case;
     end process;
