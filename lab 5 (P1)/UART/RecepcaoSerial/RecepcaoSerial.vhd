@@ -9,7 +9,7 @@ entity RecepcaoSerial is
         ENTRADASERIAL : in std_logic;
         RECEBEDADO : in std_logic;
 
-        DADOS : out std_logic_vector(9 downto 0);
+        DADOS : out std_logic_vector(10 downto 0);
         PRONTO : out std_logic
     );
 end entity;
@@ -22,7 +22,7 @@ architecture rtl of RecepcaoSerial is
                 registra : in std_logic;
                 serial : in std_logic;
 
-                dados : out std_logic_vector(9 downto 0)
+                dados : out std_logic_vector(10 downto 0)
         );
     end component;
 

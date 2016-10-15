@@ -4,20 +4,20 @@ library IEEE;
 
 entity TickDivider is
     port (
-        TICKIN : in  std_logic;
-        TICKOUT : out  std_logic
+        TICKIN4800HZ : in  std_logic;
+        TICKOUT300HZ : out  std_logic
     );
 end entity;
 
 architecture rtl of TickDivider is
     signal clock : std_logic := '0';
 begin
-    process (TICKIN)
+    process (TICKIN4800HZ)
         variable contador : integer range 0 to 3;
     begin
-        if (TICKIN'event and TICKIN='1') then
+        if (TICKIN4800HZ'event and TICKIN4800HZ='1') then
             if (contador = 3) then
-                TICKOUT <= clock;
+                TICKOUT300HZ <= clock;
                 clock <= not clock;
                 contador := 0;
             else 

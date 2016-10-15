@@ -11,8 +11,8 @@ entity contador_tick is
       M: integer := 10417     -- modulo do contador
    );
    port(
-      clk, reset: in std_logic;
-      tick: out std_logic
+      clk50Mhz, reset: in std_logic;
+      tick4800hz: out std_logic
    );
 end contador_tick;
 
@@ -20,16 +20,16 @@ architecture arch of contador_tick is
    signal contagem, prox_contagem: integer;
 begin
    -- registrador
-   process(clk,reset)
+   process(clk50Mhz,reset)
    begin
       if (reset='1') then
          contagem <= 0;
-      elsif (clk'event and clk='1') then
+      elsif (clk50Mhz'event and clk50Mhz='1') then
          contagem <= prox_contagem;
       end if;
    end process;
    -- logica de proximo estado
    prox_contagem <= 0 when contagem=(M-1) else contagem + 1;
    -- logica de saida
-   tick <= '1' when contagem=(M-1) else '0';
+   tick4800hz <= '1' when contagem=(M-1) else '0';
 end arch;
