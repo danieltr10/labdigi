@@ -86,7 +86,8 @@ architecture rtl of UART is
         partida : out std_logic
         );
     end component;
-
+    
+    signal dadoRec : std_logic_vector(10 downto 0);
     signal prontoTransmissao : std_logic;
     signal prontoRecepcao : std_logic;
     signal partidaUART : std_logic;
@@ -128,7 +129,7 @@ begin
         entradaSerial => ENTRADA,
         recebeDado => recebeDadoSignal,
 
-        dados => DADO_REC,
+        dados => dadoRec,
         pronto => prontoRecepcao
     );
 
@@ -142,4 +143,11 @@ begin
         pronto => prontoTransmissao
     );
 
+    process (prontoRecepcao)
+    begin
+        if (prontoRecepcao = '1') then
+            DADO_REC <= dadoRec;
+        end if;
+    end process;
+    
 end architecture;
