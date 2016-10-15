@@ -87,9 +87,11 @@ architecture rtl of UART is
         );
     end component;
     
+    signal prontoRepBorder : std_logic := '0';
     signal dadoRec : std_logic_vector(10 downto 0);
     signal prontoTransmissao : std_logic;
-    signal prontoRecepcao : std_logic;
+    signal prontoRecepcao : std_logic := '0';
+    signal prontoRepAux : std_logic := '0';
     signal partidaUART : std_logic;
     signal temDadoRec : std_logic;
     signal recebeDadoSignal : std_logic;
@@ -143,10 +145,18 @@ begin
         pronto => prontoTransmissao
     );
 
+    process (prontoRepBorder)
+    begin
+        if (prontoRepBorder = '1') then
+            DADO_REC <= dadoRec;
+        end if;
+    end process;
+    
     process (prontoRecepcao)
     begin
-        if (prontoRecepcao = '1') then
-            DADO_REC <= dadoRec;
+        prontoRepBorder <= prontoRecepcao and (not prontoRepAux);
+        if (clk'event and clk='1') then
+            prontoRepAux <= prontoRecepcao;
         end if;
     end process;
     
