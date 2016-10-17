@@ -13,10 +13,10 @@ architecture rtl of TickDivider is
     signal clock : std_logic := '0';
 begin
     process (TICKIN4800HZ)
-        variable contador : integer range 0 to 3;
+        variable contador : integer range 0 to 7;
     begin
         if (TICKIN4800HZ'event and TICKIN4800HZ='1') then
-            if (contador = 3) then
+            if (contador = 7) then
                 TICKOUT300HZ <= clock;
                 clock <= not clock;
                 contador := 0;

@@ -6,6 +6,7 @@ entity UART is
     port (
         CLK : in  std_logic;
         RESET : in  std_logic;
+        CLK300Hz : out std_logic;
 
         -- Transmissao IN
         
@@ -21,13 +22,18 @@ entity UART is
         
         TRANSM_ANDAMENTO : out std_logic;
         SAIDA : out std_logic;
+        WORD0TRANS : out std_logic_vector(6 downto 0);
+        WORD1TRANS : out std_logic_vector(6 downto 0);
         
         -- Recepcao OUT
         
         TEM_DADO_REC : out std_logic;
-        DADO_REC : out std_logic_vector(10 downto 0)
+        DADO_REC : out std_logic_vector(10 downto 0);
+        WORD0REC: out std_logic_vector(6 downto 0);
+        WORD1REC: out std_logic_vector(6 downto 0);
 
 
+        estadoDepuracao : out std_logic_vector(2 downto 0)
     );
 end entity;
 
@@ -54,7 +60,9 @@ architecture rtl of UART is
         recebeDado : in std_logic;
 
         dados : out std_logic_vector(10 downto 0);
-        pronto : out std_logic
+        pronto : out std_logic;
+        temDado : out std_logic;
+        estadoDepuracao : out std_logic_vector(2 downto 0)
         );
     end component;
 
@@ -71,13 +79,6 @@ architecture rtl of UART is
         port(clk : in  std_logic;
         reset : in  std_logic;
 
-        -- Recepcao
-        recebe_dado : in std_logic;
-        pronto_recepcao : in std_logic;
-
-        tem_dado_rec : out std_logic;
-        recebe_dado_signal : out std_logic;
-
         -- Transmissao
         pronto_transmissao : in std_logic;
         transmite_dado : in std_logic;
@@ -87,28 +88,28 @@ architecture rtl of UART is
         );
     end component;
     
-    signal prontoRepBorder : std_logic := '0';
+    component HexTo7Seg is
+        Port ( valor : in std_logic_vector(3 downto 0);
+        blank : in std_logic;
+        test : in std_logic;
+        segs : out std_logic_vector(6 downto 0));
+    end component;
+    
     signal dadoRec : std_logic_vector(10 downto 0);
+    signal dado7SegRec : std_logic_vector(10 downto 0);
     signal prontoTransmissao : std_logic;
-    signal prontoRecepcao : std_logic := '0';
-    signal prontoRepAux : std_logic := '0';
+    signal prontoRecepcao : std_logic;
     signal partidaUART : std_logic;
     signal temDadoRec : std_logic;
-    signal recebeDadoSignal : std_logic;
     signal partida : std_logic;
     signal tickTX : std_logic;
     signal tickRX : std_logic;
 begin
+    
+    CLK300Hz <= tickTX;
 
     UC : UnidadeControleUART port map(clk => CLK,
-													reset => RESET,
-        -- Recepcao
-
-        recebe_dado => RECEBE_DADO,
-        pronto_recepcao => prontoRecepcao,
-
-        tem_dado_rec => TEM_DADO_REC,
-        recebe_dado_signal => recebeDadoSignal,
+		                              reset => RESET,
 
         -- Transmissao
         pronto_transmissao => prontoTransmissao,
@@ -129,10 +130,12 @@ begin
     Recepcao : RecepcaoSerial port map(clk => tickRX,
         reset => RESET,
         entradaSerial => ENTRADA,
-        recebeDado => recebeDadoSignal,
+        recebeDado => RECEBE_DADO,
 
         dados => dadoRec,
-        pronto => prontoRecepcao
+        pronto => prontoRecepcao,
+        temDado => TEM_DADO_REC,
+        estadoDepuracao => estadoDepuracao
     );
 
 
@@ -144,19 +147,36 @@ begin
         dadosserial => SAIDA,
         pronto => prontoTransmissao
     );
-
-    process (prontoRepBorder)
-    begin
-        if (prontoRepBorder = '1') then
-            DADO_REC <= dadoRec;
-        end if;
-    end process;
     
+    Word0Recepcao : HexTo7Seg port map(valor => dado7SegRec(1) & dado7SegRec(2) & dado7SegRec(3) & dado7SegRec(4),
+                                       blank => '0',
+                                       test => '0',
+                                       segs => WORD0REC
+    );
+    
+    Word1Recepcao : HexTo7Seg port map(valor => dado7SegRec(5) & dado7SegRec(6) & dado7SegRec(7) & dado7SegRec(8),
+        blank => '0',
+        test => '0',
+        segs => WORD1REC
+    );
+    
+    Word0Transmissao : HexTo7Seg port map(valor => DADOS_TRANS(7 downto 4),
+        blank => '0',
+        test => '0',
+        segs => WORD0TRANS
+    );
+    
+    Word1Transmissao : HexTo7Seg port map(valor => DADOS_TRANS(3 downto 0),
+        blank => '0',
+        test => '0',
+        segs => WORD1TRANS
+    );
+
     process (prontoRecepcao)
     begin
-        prontoRepBorder <= prontoRecepcao and (not prontoRepAux);
-        if (clk'event and clk='1') then
-            prontoRepAux <= prontoRecepcao;
+        if (prontoRecepcao = '1') then
+            DADO_REC <= dadoRec;
+            dado7SegRec <= dadoRec;
         end if;
     end process;
     

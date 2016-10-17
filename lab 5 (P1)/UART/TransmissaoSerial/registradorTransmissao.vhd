@@ -20,7 +20,7 @@ begin
     begin
         if (clk'event and clk='1') then
             if (registra = '1') then
-                ISERIAL <= '0' & dados & (dados(0) xor dados(1) xor dados(2) xor dados(3) xor dados(4) xor dados(5) xor dados(6) xor dados(7)) & '1';
+                ISERIAL <= '0' & dados & not (dados(0) xor dados(1) xor dados(2) xor dados(3) xor dados(4) xor dados(5) xor dados(6) xor dados(7)) & '1';
                 serial <= '1';
             elsif (desloca = '1') then
                 serial <= ISERIAL(10);

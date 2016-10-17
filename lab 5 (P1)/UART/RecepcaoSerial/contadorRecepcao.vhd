@@ -18,7 +18,7 @@ architecture rtl of contadorRecepcao is
     signal var_fim : std_logic;
 begin
     process(clk, conta, reset)
-        variable contador : integer range 0 to 10;
+        variable contador : integer range 0 to 9;
         variable contador8 : integer range 0 to 7;
         variable contador16 : integer range 0 to 15;
     begin
@@ -34,12 +34,12 @@ begin
             if (conta = '1') then
                 if (contador8 = 7) then
                     conta4 <= '1';
-                    if (contador16 = 15 and contador /= 10) then
+                    if (contador16 = 15 and contador /= 9) then
                         contador16 := 0;
                         contador := contador + 1;
                         conta8 <= '1';
                         fim <= '0';
-                    elsif (contador16 =7 and contador = 10) then
+                    elsif (contador16 = 15 and contador = 9) then
                         fim <= '1';
                         var_fim <= '1';
                         conta8 <= '1';

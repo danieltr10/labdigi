@@ -10,7 +10,9 @@ entity RecepcaoSerial is
         RECEBEDADO : in std_logic;
 
         DADOS : out std_logic_vector(10 downto 0);
-        PRONTO : out std_logic
+        PRONTO : out std_logic;
+        TEMDADO : out std_logic;
+        estadoDepuracao : out std_logic_vector(2 downto 0)
     );
 end entity;
 
@@ -49,7 +51,9 @@ architecture rtl of RecepcaoSerial is
                 pronto : out std_logic;
                 registra : out std_logic;
                 conta : out std_logic;
-                zera : out std_logic
+                zera : out std_logic;
+					 temDado : out std_logic;
+                estadoDepuracao : out std_logic_vector(2 downto 0)
         );
     end component;
 
@@ -72,7 +76,9 @@ begin
                                            pronto => PRONTO,
                                            conta => CONTA_UC,
                                            registra => REGISTRA,
-                                           zera => ZERA
+                                           zera => ZERA,
+                                           temDado => TEMDADO,
+                                           estadoDepuracao => estadoDepuracao
     );
 
     Contador : contadorRecepcao port map (clk => CLK,
