@@ -15,8 +15,10 @@ entity InterfaceModem is
         
         RECEBIDO : out std_logic;
         DADOSRECEBIDO : out std_logic_vector(9 downto 0);
-        LEDCD : out std_logic;
-        LEDCTS : out std_logic;
+        WORD0REC : out std_logic_vector(6 downto 0);
+        WORD1REC : out std_logic_vector(6 downto 0);
+        WORD0TRANS : out std_logic_vector(6 downto 0);
+        WORD1TRANS : out std_logic_vector(6 downto 0);
         TD : out std_logic;
         RTS : out std_logic;   
         PARTIDA_DEPURACAO : out std_logic; 
@@ -74,16 +76,25 @@ architecture rtl of InterfaceModem is
         );
     end component;
     
+    component HexTo7Seg is
+        Port ( valor : in std_logic_vector(3 downto 0);
+        blank : in std_logic;
+        test : in std_logic;
+        segs : out std_logic_vector(6 downto 0));
+    end component;
+    
     signal IPARTIDA : std_logic;
     signal prontoT : std_logic;
     signal clockT: std_logic;
     signal enableR : std_logic;
     SIGNAL IDADOS : STD_LOGIC;
+    signal IDADOSREC : std_logic_vector(9 downto 0);
 begin
     
 	PARTIDA_DEPURACAO <= IPARTIDA;
 	SERIAL_DEPURACAO <= IDADOS;
 	TD <= IDADOS;
+    DADOSRECEBIDO <= IDADOSREC;
 	
     UC : UnidadeControleInterface port map (clk => CLK,
                                             reset => RESET,
@@ -114,11 +125,35 @@ begin
                                         reset => RESET or (not enableR),
                                         entradaSerial => RD,
                                         
-                                        dados => DADOSRECEBIDO,
+                                        dados => IDADOSREC,
                                         pronto => RECEBIDO
     );
     
     ClockTransmissao : ClockDivider port map (clkin => CLK,
                                               clkout => clockT
+    );
+    
+    Word0Recepcao : HexTo7Seg port map(valor => IDADOSREC(1) & IDADOSREC(2) & IDADOSREC(3) & IDADOSREC(4),
+        blank => '0',
+        test => '0',
+        segs => WORD0REC
+    );
+
+    Word1Recepcao : HexTo7Seg port map(valor => IDADOSREC(5) & IDADOSREC(6) & IDADOSREC(7) & IDADOSREC(8),
+        blank => '0',
+        test => '0',
+        segs => WORD1REC
+    );
+
+    Word0Transmissao : HexTo7Seg port map(valor => DADOS(7 downto 4),
+        blank => '0',
+        test => '0',
+        segs => WORD0TRANS
+    );
+
+    Word1Transmissao : HexTo7Seg port map(valor => DADOS(3 downto 0),
+        blank => '0',
+        test => '0',
+        segs => WORD1TRANS
     );
 end architecture;
