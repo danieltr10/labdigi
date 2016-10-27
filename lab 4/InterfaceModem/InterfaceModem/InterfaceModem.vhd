@@ -90,11 +90,17 @@ architecture rtl of InterfaceModem is
     SIGNAL IDADOS : STD_LOGIC;
     signal IDADOSREC : std_logic_vector(9 downto 0);
 begin
-    
+		
 	PARTIDA_DEPURACAO <= IPARTIDA;
 	SERIAL_DEPURACAO <= IDADOS;
 	TD <= IDADOS;
-    DADOSRECEBIDO <= IDADOSREC;
+	
+	process (CLK, IDADOSREC)
+	begin
+		if (enableR = '1') then
+			DADOSRECEBIDO <= IDADOSREC;
+		end if;
+	end process;
 	
     UC : UnidadeControleInterface port map (clk => CLK,
                                             reset => RESET,
@@ -122,7 +128,7 @@ begin
     );
     
     Receptor : RecepcaoSerial port map (clk => CLK,
-                                        reset => RESET or (not enableR),
+                                        reset => RESET or (not EnableR),
                                         entradaSerial => RD,
                                         
                                         dados => IDADOSREC,
