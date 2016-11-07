@@ -5,6 +5,7 @@ library IEEE;
 entity InterfaceModem is
     port (
         CLK : in  std_logic;
+		  CLKSignalTap : in std_logic;
         RESET : in  std_logic;
         LIGA : in std_logic;
         DADOS : in std_logic_vector(7 downto 0);
@@ -23,8 +24,10 @@ entity InterfaceModem is
         RTS : out std_logic;   
         PARTIDA_DEPURACAO : out std_logic; 
         SERIAL_DEPURACAO : out std_logic;   
-        ESTADO_UC_TRANSMISSAO : out std_logic_VECTOR(1 DOWNTO 0);   
-        DTR : out std_logic
+        ESTADO_UC_TRANSMISSAO : out std_logic_VECTOR(1 DOWNTO 0);  
+			ESTADO_DEPURACAO : OUT STD_logic_VECTOR(1 DOWNTO 0);
+        DTR : out std_logic;
+		  clockDep : out std_logic
     );
 end entity;
 
@@ -50,7 +53,8 @@ architecture rtl of InterfaceModem is
              dtr : out std_logic;
              rts : out std_logic;
              partida : out std_logic;
-             enableRecepcao : out std_logic
+             enableRecepcao : out std_logic;
+				 estado_depuracao : out std_logic_VECTOR(1 downto 0)
     );
     end component;
     
@@ -89,6 +93,7 @@ architecture rtl of InterfaceModem is
     signal enableR : std_logic;
     SIGNAL IDADOS : STD_LOGIC;
     signal IDADOSREC : std_logic_vector(9 downto 0);
+
 begin
 		
 	PARTIDA_DEPURACAO <= IPARTIDA;
@@ -113,7 +118,8 @@ begin
                                             dtr => DTR,
                                             rts => RTS,
                                             partida => IPARTIDA,
-                                            enableRecepcao => enableR
+                                            enableRecepcao => enableR,
+														  estado_depuracao => ESTADO_DEPURACAO
                                             
     );    
     
@@ -128,7 +134,7 @@ begin
     );
     
     Receptor : RecepcaoSerial port map (clk => CLK,
-                                        reset => RESET or (not EnableR),
+                                        reset => RESET,
                                         entradaSerial => RD,
                                         
                                         dados => IDADOSREC,
@@ -138,6 +144,8 @@ begin
     ClockTransmissao : ClockDivider port map (clkin => CLK,
                                               clkout => clockT
     );
+	 
+	 clockDep <= clockT;
     
     Word0Recepcao : HexTo7Seg port map(valor => IDADOSREC(1) & IDADOSREC(2) & IDADOSREC(3) & IDADOSREC(4),
         blank => '0',

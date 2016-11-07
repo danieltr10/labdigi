@@ -15,7 +15,8 @@ entity UnidadeControleInterface is
         DTR : out std_logic;
         RTS : out std_logic;
         PARTIDA : out std_logic;
-        ENABLERECEPCAO : out std_logic
+        ENABLERECEPCAO : out std_logic;
+		  ESTADO_DEPURACAO : out std_logic_vector(1 downto 0)
     );
 end entity;
 
@@ -46,10 +47,13 @@ begin
     begin
         if (LIGA = '0') then
             estadoTransmissao <= t0;
+				ESTADO_DEPURACAO <= "00";
         elsif (RESET = '1') then
             estadoTransmissao <= t1;
+				ESTADO_DEPURACAO <= "01";
         elsif (estadoTransmissao = t0) then
             estadoTransmissao <= t1;
+				ESTADO_DEPURACAO <= "01";
         else
             if (CLK'event and CLK='1') then
                 case estadoTransmissao is
@@ -58,14 +62,17 @@ begin
                     when t1 =>
                         if (borderEnviar = '1') then
                             estadoTransmissao <= t2;
+									 ESTADO_DEPURACAO <= "10";
                         end if;
                     when t2 =>
                         if (CTS = '0') then
                             estadoTransmissao <= t3;
+									 ESTADO_DEPURACAO <= "11";
                         end if;
                     when t3 =>
                         if (PRONTOTRANSMISSAO = '1') then
                             estadoTransmissao <= t1;
+									 ESTADO_DEPURACAO <= "01";
                         end if;
                 end case;
             end if;
@@ -96,7 +103,7 @@ begin
             estadoRecepcao <= r0;
         elsif (RESET = '1') then
             estadoRecepcao <= r1;
-        elsif (estadoTransmissao = t0) then
+        elsif (estadoRecepcao = r0) then
             estadoRecepcao <= r1;
         else
             if (CLK'event and CLK='1') then
