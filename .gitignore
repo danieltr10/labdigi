@@ -251,3 +251,14 @@ ModelManifest.xml
 /MORSE/Morse/Morse/Morse.sln
 *.sln
 *.v3sproj
+/lab 6
+/MORSE/db
+/MORSE/incremental_db/compiled_partitions
+/MORSE/incremental_db
+/MORSE/Morse/Morse/UnidadeControleMorse.vhd.bak
+/MORSE/output_files
+/MORSE/simulation/qsim
+/MORSE/Waveform.vwf
+/MORSE/Morse.qws
+/MORSE/Morse.qsf
+/MORSE/Morse.qpf

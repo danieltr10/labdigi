@@ -8,7 +8,7 @@ entity TransmissaoSerial is
     port(
         CLK : in std_logic;
         RESET : in std_logic;
-        DADOS : in std_logic_vector(7 downto 0);
+        DADOS : in std_logic_vector(82 downto 0);
         PARTIDA :  in std_logic;
         
         DADOSSERIAL : out std_logic;
@@ -45,7 +45,7 @@ architecture estrutural of TransmissaoSerial is
         port(   clk : in STD_LOGIC;
         desloca: in STD_LOGIC;
         registra : in STD_LOGIC;
-        dados : in STD_LOGIC_VECTOR (7 downto 0); -- data in
+        dados : in STD_LOGIC_VECTOR (82 downto 0); -- data in
 
         serial : out STD_LOGIC
         );
