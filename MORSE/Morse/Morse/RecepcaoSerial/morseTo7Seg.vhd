@@ -24,63 +24,63 @@ begin
             case valor is
                 when "010011111111" => -- A
                     rightHex <= "0011001";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000000011111" => -- B
                     rightHex <= "0100100";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000100011111" => -- C
                     rightHex <= "0110000";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000001111111" => -- D
                     rightHex <= "0011001";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "001111111111" => -- E
                     rightHex <= "0010010";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000100001111" => -- F
                     rightHex <= "0000010";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000101111111" => -- G
                     rightHex <= "1111000";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000000001111" => -- H
                     rightHex <= "0000000";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000011111111" => -- I
                     rightHex <= "0011000"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "010101001111" => -- J
                     rightHex <= "0001000"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "010001111111" => -- K
                     rightHex <= "0000011"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000001001111" => -- L
                     rightHex <= "1000110"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "010111111111" => -- M
                     rightHex <= "0100001"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000111111111" => -- N
                     rightHex <= "0000110";
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "010101111111" => -- O
                     rightHex <= "0001110"; 
-                    leftHex <= "1111001"; 
+                    leftHex <= "0011001"; 
 
                 when "000101001111" => -- P
                     rightHex <= "1000000"; 
