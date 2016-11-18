@@ -9,6 +9,7 @@ entity UnidadeControleMorse is
         COUNTER : in std_logic;
         RESET : in std_logic;
         LIGA : in std_logic;
+        PRONTOTRANSMISSAO: in std_logic;
         
         CARREGAPONTO : out std_logic;
         CARREGATRACO : out std_logic;
@@ -25,9 +26,9 @@ architecture rtl of UnidadeControleMorse is
 begin
     process (MORSE)
     begin 
-        if (LIGA = 0) then
+        if (LIGA = '0') then
             state <= t0;
-        elsif (RESET = 1) then
+        elsif (RESET = '1') then
             state <= t0;
         else
             if (CLK'event and CLK='1') then
@@ -36,15 +37,15 @@ begin
                         state <= t1;
                     when t1 =>
                         if (COUNTER = '1') then
-                            if (MORSE'event and MORSE = '1') then
+                            if ((MORSE'event) and (MORSE = '1')) then
                                 state <= t2;
                             else 
                                 state <= t5;
                             end if;
                         end if;
                     when t2 =>
-                        if (COUNTER = 0) then
-                            if (MORSE = 0) then
+                        if (COUNTER = '0') then
+                            if (MORSE = '0') then
                                 state <= t3;
                             else
                                 state <= t4;
@@ -57,7 +58,9 @@ begin
                     when t5 =>
                         state <= t6;
                     when t6 =>
-                        state <= t1;
+                        if (PRONTOTRANSMISSAO = '1') then
+                            state <= t1;
+                        end if;
                 end case;
             end if;
         end if;
