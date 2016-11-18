@@ -9,7 +9,9 @@ entity RecepcaoSerial is
         RESET : in  std_logic;
         ENTRADASERIAL : in std_logic;
 
-        DADOS : out std_logic_vector(11 downto 0);
+		MORSE_DEPURACAO : out std_logic_vector(11 downto 0);
+        RIGHT_HEX_DISPLAY : out std_logic_vector(6 downto 0);
+        LEFT_HEX_DISPLAY : out std_logic_vector(6 downto 0);
         estadoDepuracao : out std_logic_vector(2 downto 0)
     );
 end entity;
@@ -56,8 +58,9 @@ architecture rtl of RecepcaoSerial is
     end component;
 
     component morseTo7Seg is
-        port(   valor : in std_logic_vector(3 downto 0);
+        port(   valor : in std_logic_vector(11 downto 0);
                 blank : in std_logic;
+                mostraDadoDisplay : in std_logic;
 
                 rightHex : out std_logic_vector(6 downto 0);
                 leftHex : out std_logic_vector(6 downto 0)
@@ -72,9 +75,13 @@ architecture rtl of RecepcaoSerial is
     signal MOSTRA_DADO_DISPLAY : std_logic;
     signal REGISTRA_PONTO : std_logic;
     signal REGISTRA_TRACO : std_logic;
+    signal DADOS_MORSE : std_logic_vector(11 downto 0);
     signal ZERA : std_logic;
+    
 begin
 
+	MORSE_DEPURACAO <= DADOS_MORSE;
+	
     UC : unidadeControleRecepcao port map (clk => CLK,
                                            bitSerial => ENTRADASERIAL,
                                            liga => LIGA,
@@ -84,7 +91,7 @@ begin
                                            
                                            mostraDadoDisplay => MOSTRA_DADO_DISPLAY,
                                            conta4 => CONTAR_4,
-                                           conta4 => CONTAR_3,
+                                           conta3 => CONTAR_3,
                                            registraPonto => REGISTRA_PONTO,
                                            registraTraco => REGISTRA_TRACO,
                                            zera => ZERA,
@@ -102,11 +109,19 @@ begin
     );
 
     Registrador : registradorRecepcao port map(clk => CLK,
-															                 reset => RESET,
+											   reset => RESET,
                                                registraPonto => REGISTRA_PONTO,
                                                registraTraco => REGISTRA_TRACO,
                                                
-                                               dados => DADOS
+                                               dados => DADOS_MORSE
+    );
+
+    Conversor : morseTo7Seg port map(valor => DADOS_MORSE,
+									 blank => RESET,
+                                     mostraDadoDisplay => MOSTRA_DADO_DISPLAY,
+                                     
+                                     rightHex => RIGHT_HEX_DISPLAY,        
+                                     leftHex => LEFT_HEX_DISPLAY
     );
 
 end architecture;

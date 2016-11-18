@@ -5,8 +5,9 @@ entity Registrador is
     port (
         clk : in STD_LOGIC;
         desloca : in STD_LOGIC;
-        registra : in STD_LOGIC;
-        dados : in STD_LOGIC; -- data in
+        registraponto : in STD_LOGIC; -- data in
+        registratraco : in std_logic;
+        registrafim : in std_logic;
         
         serial : out STD_LOGIC -- data
     );
@@ -16,11 +17,17 @@ architecture estrutural of Registrador is
     signal ISERIAL : STD_LOGIC_VECTOR (55 downto 0);
 
 begin
-    process (clk, ISERIAL, desloca, registra)
+    process (clk, ISERIAL, desloca, registratraco, registraponto)
     begin
         if (clk'event and clk='1') then
-            if (registra = '1') then
-                ISERIAL <= ISERIAL(55 downto 1) & dados;
+            if (registraponto = '1') then
+                ISERIAL <= ISERIAL(55 downto 7) & "00001111";
+                serial <= '1';
+            elsif (registratraco = '1') then
+                ISERIAL <= ISERIAL(55 downto 11) & "000000001111";
+                serial <= '1';
+            elsif (registrafim = '1') then
+                ISERIAL <= ISERIAL(55 downto 3) & "1111";
                 serial <= '1';
             elsif (desloca = '1') then
                 serial <= ISERIAL(55);

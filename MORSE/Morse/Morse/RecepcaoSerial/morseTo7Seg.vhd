@@ -4,21 +4,23 @@ library IEEE;
     use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity morseTo7Seg is
-    Port ( valor : in std_logic_vector(3 downto 0);
+    Port ( valor : in std_logic_vector(11 downto 0);
     blank : in std_logic;
+    mostraDadoDisplay : in std_logic;
 
-    rightHex : out std_logic_vector(6 downto 0));
-    leftHex : out std_logic_vector(6 downto 0));
+    rightHex : out std_logic_vector(6 downto 0);
+    leftHex : out std_logic_vector(6 downto 0)
+    );
 end morseTo7Seg;
 
 architecture behavioral of morseTo7Seg is
 begin
-    process (valor, blank) is
+    process (valor, blank, mostraDadoDisplay) is
     begin
         if (blank = '1') then
             rightHex <= "1111111";
             rightHex <= "1111111";
-        else
+        elsif (mostraDadoDisplay = '1') then 
             case valor is
                 when "000111111111" => -- A
                     rightHex <= "0011001";
@@ -160,7 +162,7 @@ begin
                     rightHex <= "0000000"; 
                     leftHex <= "0110000"; 
 
-                when "010101000011" => -- 9
+                when "010101010011" => -- 9
                     rightHex <= "0011000"; 
                     leftHex <= "0110000"; 
 
@@ -176,7 +178,7 @@ begin
                     rightHex <= "0001110"; 
                     leftHex <= "0110000"; 
 
-                when others => rightHex <= "01111111"; -- INVALID
+                when others => rightHex <= "0111111"; -- INVALID
 
             end case;
         end if;

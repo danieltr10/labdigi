@@ -262,3 +262,8 @@ ModelManifest.xml
 /MORSE/Morse.qws
 /MORSE/Morse.qsf
 /MORSE/Morse.qpf
+/MORSE/Morse/Morse/RecepcaoSerial/unidadeControleRecepcao.vhd.bak
+/MORSE/Morse/Morse/RecepcaoSerial/registradorRecepcao.vhd.bak
+/MORSE/Morse/Morse/RecepcaoSerial/RecepcaoSerial.vhd.bak
+/MORSE/Morse/Morse/RecepcaoSerial/morseTo7Seg.vhd.bak
+/MORSE/Morse/Morse/RecepcaoSerial/contadorRecepcao.vhd.bak

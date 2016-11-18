@@ -9,7 +9,6 @@ ENTITY unidade_controle IS
     PORT(
         clk      : IN   STD_LOGIC;
         partida  : IN   STD_LOGIC;
-        registra : IN STD_LOGIC;
         fim       : IN STD_LOGIC;
         reset    : IN STD_LOGIC;
 
@@ -46,7 +45,7 @@ BEGIN
             CASE estado IS
 
                 WHEN s0 =>
-                    IF partida_x = '1' and registra = 0 THEN
+                    IF partida_x = '1' THEN
                         estado <= s1;
 						estado_atual <= "01";
                     ELSE

@@ -16,7 +16,7 @@ end entity;
 
 architecture rtl of contadorRecepcao is
 begin
-    process(clk, conta, reset)
+    process(clk, conta4, conta3, reset)
         variable contador4 : integer range 0 to 3;
         variable contador3 : integer range 0 to 2;
     begin

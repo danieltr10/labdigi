@@ -22,7 +22,7 @@ entity unidadeControleRecepcao is
 end entity;
 
 architecture rtl of unidadeControleRecepcao is 
-    type tipoEstado is (s0, s1, s2, s3, s4, s5, s6);
+    type tipoEstado is (s0, s1, s2, s3, s4, s5, s6, s7);
     signal estado : tipoEstado;
     
 begin
@@ -59,19 +59,25 @@ begin
                         estado <= s5;
                         estadoDepuracao <= "101";
                     when s5 =>
-                        if fimConta3 then
+                        if (fimConta3 = '1') then
                             if (bitSerial = '1') then
                                 estado <= s6;
-                                estadoDepuracao <= "101";
+                                estadoDepuracao <= "110";
                             else
-                                estado <= s2;
-                                estadoDepuracao <= "010";
+                                estado <= s7;
+                                estadoDepuracao <= "111";
                             end if ;
                         end if ;
+                    when s6 =>
+						estado <= s1;
+                        estadoDepuracao <= "001";
+					when s7 =>
+						estado <= s2;
+                        estadoDepuracao <= "010";
                 end case;
             elsif (bitSerial = '0') then
                 estado <= s2;
-                estadoDepuracao <= "010"
+                estadoDepuracao <= "010";
             end if;
         end if;
     end process;
@@ -117,12 +123,19 @@ begin
             when s5 =>
                 mostraDadoDisplay <= '0';
                 conta4 <= '0';
-                conta3 <= '0';
+                conta3 <= '1';
                 registraPonto <= '0';
                 registraTraco <= '0';
                 zera <= '0';
             when s6 =>
                 mostraDadoDisplay <= '1';
+                conta4 <= '0';
+                conta3 <= '0';
+                registraPonto <= '0';
+                registraTraco <= '0';
+                zera <= '1';
+            when s7 =>
+                mostraDadoDisplay <= '0';
                 conta4 <= '0';
                 conta3 <= '0';
                 registraPonto <= '0';

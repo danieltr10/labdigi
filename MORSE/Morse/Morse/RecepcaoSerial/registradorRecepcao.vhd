@@ -9,12 +9,12 @@ entity registradorRecepcao is
         registraPonto : in std_logic;
         registraTraco : in std_logic;
 
-        dados : out std_logic_vector(11 downto 0)
+        dados : out std_logic_vector(11 downto 0) := "111111111111"
     );
 end entity;
 
 architecture rtl of registradorRecepcao is
-    signal REGISTRADOR : std_logic_vector(11 downto 0);
+    signal REGISTRADOR : std_logic_vector(11 downto 0) := "111111111111";
 begin
     process (clk, REGISTRADOR, registraPonto, registraTraco)
     begin
