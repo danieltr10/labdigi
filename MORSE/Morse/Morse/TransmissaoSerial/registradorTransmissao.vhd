@@ -21,13 +21,13 @@ begin
     begin
         if (clk'event and clk='1') then
             if (registraponto = '1') then
-                ISERIAL <= ISERIAL(55 downto 7) & "00001111";
+                ISERIAL <= ISERIAL(55 downto 8) & "00001111";
                 serial <= '1';
             elsif (registratraco = '1') then
-                ISERIAL <= ISERIAL(55 downto 11) & "000000001111";
+                ISERIAL <= ISERIAL(55 downto 12) & "000000001111";
                 serial <= '1';
             elsif (registrafim = '1') then
-                ISERIAL <= ISERIAL(55 downto 3) & "1111";
+                ISERIAL <= ISERIAL(55 downto 4) & "1111";
                 serial <= '1';
             elsif (desloca = '1') then
                 serial <= ISERIAL(55);

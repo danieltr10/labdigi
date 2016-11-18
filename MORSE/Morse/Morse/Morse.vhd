@@ -10,7 +10,8 @@ entity Morse is
         COUNTER : in std_logic;
         LIGA : in std_logic;
         
-        SERIAL_OUT : out std_logic
+        SERIAL_OUT : out std_logic;
+        ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0)
     );
 end entity;
 
@@ -44,7 +45,8 @@ architecture rtl of Morse is
             carregafim : out std_logic;
             partida : out std_logic;
             DTR : out std_logic;
-            RTS : out std_logic
+            RTS : out std_logic;
+            estado_depuracao : out std_logic_vector(2 downto 0)
         );
     end component;
     
@@ -66,7 +68,8 @@ begin
         carregaponto => carrega_ponto_signal,
         carregatraco => carrega_traco_signal,
         carregafim => carrega_fim_signal,
-        partida => partida_signal 
+        partida => partida_signal,
+        estado_depuracao => ESTADO_TRANSMISSAO
     );
     
     Transmissao: TransmissaoSerial port map (

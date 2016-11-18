@@ -16,50 +16,64 @@ entity UnidadeControleMorse is
         CARREGAFIM : out std_logic;
         PARTIDA : out std_logic;
         DTR : out std_logic;
-        RTS: out std_logic
+        RTS: out std_logic;
+        ESTADO_DEPURACAO : out std_logic_vector(2 downto 0)
     );
 end entity;
 
 architecture rtl of UnidadeControleMorse is
     TYPE estado is (t0, t1, t2, t3, t4, t5, t6);
     signal state : estado := t0;
+	signal last_MORSE : std_logic := '0';  
 begin
-    process (MORSE)
+    process (MORSE, CLK, RESET, LIGA, COUNTER)
     begin 
         if (LIGA = '0') then
             state <= t0;
+            ESTADO_DEPURACAO <= "000";
         elsif (RESET = '1') then
             state <= t0;
+            ESTADO_DEPURACAO <= "000";
         else
             if (CLK'event and CLK='1') then
                 case state is
                     when t0 =>
                         state <= t1;
+                        ESTADO_DEPURACAO <= "001";
                     when t1 =>
                         if (COUNTER = '1') then
-                            if ((MORSE'event) and (MORSE = '1')) then
+                            if ((MORSE /= last_MORSE) and (MORSE = '1')) then
                                 state <= t2;
-                            else 
-                                state <= t5;
+                                ESTADO_DEPURACAO <= "010";
                             end if;
+                            last_MORSE <= MORSE;
+                        elsif (MORSE = last_MORSE) then
+                            state <= t5;
+                            ESTADO_DEPURACAO <= "101";
                         end if;
                     when t2 =>
                         if (COUNTER = '0') then
                             if (MORSE = '0') then
                                 state <= t3;
+                                ESTADO_DEPURACAO <= "011";
                             else
                                 state <= t4;
+                                ESTADO_DEPURACAO <= "100";
                             end if;
                         end if;
                     when t3 =>
                         state <= t1;
+                        ESTADO_DEPURACAO <= "001";
                     when t4 =>
                         state <= t1;
+                        ESTADO_DEPURACAO <= "001";
                     when t5 =>
                         state <= t6;
+                        ESTADO_DEPURACAO <= "110";
                     when t6 =>
                         if (PRONTOTRANSMISSAO = '1') then
                             state <= t1;
+                            ESTADO_DEPURACAO <= "001";
                         end if;
                 end case;
             end if;

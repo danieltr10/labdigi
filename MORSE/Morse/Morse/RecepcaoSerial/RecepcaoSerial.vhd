@@ -12,7 +12,7 @@ entity RecepcaoSerial is
 		MORSE_DEPURACAO : out std_logic_vector(11 downto 0);
         RIGHT_HEX_DISPLAY : out std_logic_vector(6 downto 0);
         LEFT_HEX_DISPLAY : out std_logic_vector(6 downto 0);
-        estadoDepuracao : out std_logic_vector(2 downto 0)
+        estadoDepuracao : out std_logic_vector(3 downto 0)
     );
 end entity;
 
@@ -30,11 +30,9 @@ architecture rtl of RecepcaoSerial is
 
     component contadorRecepcao is
         port(   clk: in  std_logic;
-                conta4: in std_logic;
                 conta3 : in std_logic;
                 reset: in  std_logic;
-        
-                fimConta4 : out std_logic;
+                
                 fimConta3 : out std_logic
         );
     end component;
@@ -43,17 +41,15 @@ architecture rtl of RecepcaoSerial is
         port(   clk: in  std_logic;
                 bitSerial : in std_logic;
                 liga : in std_logic;
-                fimConta4 : in std_logic;
                 fimConta3 : in std_logic;
                 reset: in  std_logic;
         
                 mostraDadoDisplay : out std_logic;
-                conta4 : out std_logic;
                 conta3 : out std_logic;
                 registraPonto : out std_logic;
                 registraTraco : out std_logic;
                 zera : out std_logic;
-                estadoDepuracao : out std_logic_vector(2 downto 0)
+                estadoDepuracao : out std_logic_vector(3 downto 0)
         );
     end component;
 
@@ -67,10 +63,7 @@ architecture rtl of RecepcaoSerial is
         );
     end component;
 
-
-    signal FIM_CONTA4 : std_logic;
     signal FIM_CONTA3 : std_logic;
-    signal CONTAR_4 : std_logic;
     signal CONTAR_3 : std_logic;
     signal MOSTRA_DADO_DISPLAY : std_logic;
     signal REGISTRA_PONTO : std_logic;
@@ -85,12 +78,10 @@ begin
     UC : unidadeControleRecepcao port map (clk => CLK,
                                            bitSerial => ENTRADASERIAL,
                                            liga => LIGA,
-                                           fimConta4 => FIM_CONTA4,
                                            fimConta3 => FIM_CONTA3,
                                            reset => RESET,
                                            
                                            mostraDadoDisplay => MOSTRA_DADO_DISPLAY,
-                                           conta4 => CONTAR_4,
                                            conta3 => CONTAR_3,
                                            registraPonto => REGISTRA_PONTO,
                                            registraTraco => REGISTRA_TRACO,
@@ -100,11 +91,9 @@ begin
 
 
     Contador : contadorRecepcao port map (clk => CLK,
-                                          conta4 => CONTAR_4,
                                           conta3 => CONTAR_3,
                                           reset => ZERA,
 
-                                          fimConta4 => FIM_CONTA4,
                                           fimConta3 => FIM_CONTA3
     );
 
