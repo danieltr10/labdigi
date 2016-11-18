@@ -4,11 +4,81 @@ library IEEE;
 
 entity Morse is
     port (
-        clk: in  std_logic;
-        rst: in  std_logic
+        CLK : in  std_logic;
+        RESET : in  std_logic;
+        MORSE : in std_logic;
+        COUNTER : in std_logic;
+        LIGA : in std_logic;
+        
+        SERIAL_OUT : out std_logic
     );
 end entity;
 
 architecture rtl of Morse is
+    component TransmissaoSerial is
+        port(
+            clk : in std_logic;
+            reset : in std_logic;
+            partida : in std_logic;
+            carrega_ponto : in std_logic;
+            carrega_traco : in std_logic;
+            carrega_fim : in std_logic;
+            
+            dadosserial : out std_logic;
+            estado_uc : out std_logic_vector(1 downto 0);
+            pronto : out std_logic
+        );
+    end component;
+    
+    component UnidadeControleMorse is
+        port(
+            clk : in std_logic;
+            morse : in std_logic;
+            counter : in std_logic;
+            reset : in std_logic;
+            liga : in std_logic;
+            prontotransmissao : in std_logic;
+            
+            carregaponto : out std_logic;
+            carregatraco : out std_logic;
+            carregafim : out std_logic;
+            partida : out std_logic;
+            DTR : out std_logic;
+            RTS : out std_logic
+        );
+    end component;
+    
+    signal carrega_ponto_signal : std_logic;
+    signal carrega_traco_signal : std_logic;
+    signal carrega_fim_signal : std_logic;
+    signal partida_signal : std_logic;
+    signal pronto_transmissao : std_logic;
+    
 begin
+    Controle: UnidadeControleMorse port map (
+        clk => CLK,
+        morse => MORSE,
+        counter => COUNTER,
+        reset => RESET,
+        liga => LIGA,
+        prontotransmissao => pronto_transmissao,
+        
+        carregaponto => carrega_ponto_signal,
+        carregatraco => carrega_traco_signal,
+        carregafim => carrega_fim_signal,
+        partida => partida_signal 
+    );
+    
+    Transmissao: TransmissaoSerial port map (
+        clk => CLK,
+        reset => RESET,
+        partida => partida_signal,
+        carrega_ponto => carrega_ponto_signal,
+        carrega_traco => carrega_traco_signal,
+        carrega_fim => carrega_fim_signal,
+        
+        dadosserial => SERIAL_OUT,
+        pronto => pronto_transmissao
+    );
+    
 end architecture;
