@@ -9,13 +9,13 @@ ENTITY unidade_controle IS
     PORT(
         clk      : IN   STD_LOGIC;
         partida  : IN   STD_LOGIC;
+        registra : IN STD_LOGIC;
         fim       : IN STD_LOGIC;
         reset    : IN STD_LOGIC;
 
         conta   : OUT STD_LOGIC;
         desloca   : OUT STD_LOGIC;
         zera   : OUT STD_LOGIC;
-        registra   : OUT STD_LOGIC;
         estado_atual  : OUT STD_LOGIC_VECTOR(1 downto 0);
         pronto : OUT STD_LOGIC
     );
@@ -46,7 +46,7 @@ BEGIN
             CASE estado IS
 
                 WHEN s0 =>
-                    IF (partida_x) = '1' THEN
+                    IF partida_x = '1' and registra = 0 THEN
                         estado <= s1;
 						estado_atual <= "01";
                     ELSE
@@ -80,28 +80,24 @@ BEGIN
         CASE estado IS
             WHEN s0 =>
                 zera <= '0';
-                registra <= '0';
                 desloca <= '0';
                 conta <= '0';
                 pronto <= '0';
 
             WHEN s1 =>
                 zera <= '0';
-                registra <= '1';
                 desloca <= '0';
                 conta <= '0';
                 pronto <= '0';
 
             WHEN s2 =>
                 zera <= '0';
-                registra <= '0';
                 desloca <= '1';
                 conta <= '1';
                 pronto <= '0';
 
             WHEN s3 =>
                 zera <= '1';
-                registra <= '0';
                 desloca <= '0';
                 conta <= '0';
                 pronto <= '1';

@@ -5,13 +5,11 @@ library IEEE;
 entity RecepcaoSerial is
     port (
         CLK : in  std_logic;
+        LIGA : in  std_logic;
         RESET : in  std_logic;
         ENTRADASERIAL : in std_logic;
-        RECEBEDADO : in std_logic;
 
-        DADOS : out std_logic_vector(10 downto 0);
-        PRONTO : out std_logic;
-        TEMDADO : out std_logic;
+        DADOS : out std_logic_vector(11 downto 0);
         estadoDepuracao : out std_logic_vector(2 downto 0)
     );
 end entity;
@@ -19,56 +17,80 @@ end entity;
 architecture rtl of RecepcaoSerial is
 
     component registradorRecepcao is
-        port(   clk : in std_logic;
-                reset : in std_logic;
-                registra : in std_logic;
-                serial : in std_logic;
+        port(   clk : in  std_logic;
+                reset : in  std_logic;
+                registraPonto : in std_logic;
+                registraTraco : in std_logic;
 
-                dados : out std_logic_vector(10 downto 0)
+                dados : out std_logic_vector(11 downto 0)
         );
     end component;
 
     component contadorRecepcao is
-        port(   clk : in std_logic;
-                conta : in std_logic;
-                reset : in std_logic;
-
-                fim : out std_logic;
-                conta4 : out std_logic;
-                conta8 : out std_logic
+        port(   clk: in  std_logic;
+                conta4: in std_logic;
+                conta3 : in std_logic;
+                reset: in  std_logic;
+        
+                fimConta4 : out std_logic;
+                fimConta3 : out std_logic
         );
     end component;
 
     component unidadeControleRecepcao is
-        port(   clk : in std_logic;
-                serialStartBit : in std_logic;
-                prontoConta4 : in std_logic;
-                prontoConta8 : in std_logic;
-                fim : in std_logic;
-                reset : in std_logic;
-                recebeDado : in std_logic;
-
-                pronto : out std_logic;
-                registra : out std_logic;
-                conta : out std_logic;
+        port(   clk: in  std_logic;
+                bitSerial : in std_logic;
+                liga : in std_logic;
+                fimConta4 : in std_logic;
+                fimConta3 : in std_logic;
+                reset: in  std_logic;
+        
+                mostraDadoDisplay : out std_logic;
+                conta4 : out std_logic;
+                conta3 : out std_logic;
+                registraPonto : out std_logic;
+                registraTraco : out std_logic;
                 zera : out std_logic;
-					 temDado : out std_logic;
                 estadoDepuracao : out std_logic_vector(2 downto 0)
         );
     end component;
 
+    component morseTo7Seg is
+        port(   valor : in std_logic_vector(3 downto 0);
+                blank : in std_logic;
+
+                rightHex : out std_logic_vector(6 downto 0);
+                leftHex : out std_logic_vector(6 downto 0)
+        );
+    end component;
+
     signal CONTA4 : std_logic;
-    signal CONTA8 : std_logic;
-    signal FIM : std_logic;
+    signal CONTA3 : std_logic;
     signal CONTA_UC : std_logic;
     signal REGISTRA : std_logic;
     signal ZERA : std_logic;
 begin
 
+  clk: in  std_logic;
+        bitSerial : in std_logic;
+        liga : in std_logic;
+        fimConta4 : in std_logic;
+        fimConta3 : in std_logic;
+        reset: in  std_logic;
+        
+        mostraDadoDisplay : out std_logic;
+        conta4 : out std_logic;
+        conta3 : out std_logic;
+        registraPonto : out std_logic;
+        registraTraco : out std_logic;
+        zera : out std_logic;
+        estadoDepuracao : out std_logic_vector(2 downto 0)
+
     UC : unidadeControleRecepcao port map (clk => CLK,
-                                           serialStartBit=> ENTRADASERIAL,
-                                           prontoConta4 => CONTA4,
-                                           prontoConta8 => CONTA8,
+                                           bitSerial => ENTRADASERIAL,
+                                           liga => LIGA,
+                                           fimConta4 => CONTA4,
+                                           fimConta3 => CONTA8,
                                            fim => FIM,
                                            reset => RESET,
                                            recebeDado => RECEBEDADO,

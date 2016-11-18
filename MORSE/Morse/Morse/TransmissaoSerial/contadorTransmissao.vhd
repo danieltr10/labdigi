@@ -16,14 +16,14 @@ architecture estrutural of contador is
 
 begin
     process(clk, conta, zera)
-        variable contador : integer range 0 to 82;
+        variable contador : integer range 0 to 55;
     begin
         if zera = '1' then
             contador := 0;
             fim <= '0';
         elsif (clk'event and clk= '1') then
             if (conta = '1') then
-                if (contador = 82) then
+                if (contador = 55) then
                     fim <= '1';
                 else
                     contador := contador + 1;

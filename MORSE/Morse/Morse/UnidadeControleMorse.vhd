@@ -4,9 +4,9 @@ library IEEE;
 
 entity UnidadeControleMorse is
     port (
-        TRACO: in  std_logic;
-        PONTO: in  std_logic;
-        ENVIAR: in std_logic;
+        MORSE : in  std_logic;
+        COUNTER : in std_logic;
+        RESET : in std_logic;
         
         DTR : out std_logic;
         RTS: out std_logic
@@ -14,7 +14,18 @@ entity UnidadeControleMorse is
 end entity;
 
 architecture rtl of UnidadeControleMorse is
+    TYPE estado is (t0, t1, t2, t3, t4);
+    signal state : estado := t0;
 begin
-    process (
+    process (MORSE)
+    begin 
+        if (RESET = 1) then
+            state <= t0;
+        end if;
+
+        case state is
+            when t0 =>
+                
+        end case;
     end process;
 end architecture;

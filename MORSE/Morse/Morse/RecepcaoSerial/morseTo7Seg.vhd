@@ -3,22 +3,20 @@ library IEEE;
     use IEEE.NUMERIC_STD.ALL;
     use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity HexTo7Seg is
+entity morseTo7Seg is
     Port ( valor : in std_logic_vector(3 downto 0);
     blank : in std_logic;
-    test : in std_logic;
+
     rightHex : out std_logic_vector(6 downto 0));
     leftHex : out std_logic_vector(6 downto 0));
-end HexTo7Seg;
+end morseTo7Seg;
 
-architecture behavioral of HexTo7Seg is
+architecture behavioral of morseTo7Seg is
 begin
-    process (valor, blank, test) is
+    process (valor, blank) is
     begin
         if (blank = '1') then
-            rightHex <= "0000000";
-            rightHex <= "0000000";
-        elsif (test = '1') then
+            rightHex <= "1111111";
             rightHex <= "1111111";
         else
             case valor is
