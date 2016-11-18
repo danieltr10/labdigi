@@ -64,58 +64,47 @@ architecture rtl of RecepcaoSerial is
         );
     end component;
 
-    signal CONTA4 : std_logic;
-    signal CONTA3 : std_logic;
-    signal CONTA_UC : std_logic;
-    signal REGISTRA : std_logic;
+
+    signal FIM_CONTA4 : std_logic;
+    signal FIM_CONTA3 : std_logic;
+    signal CONTAR_4 : std_logic;
+    signal CONTAR_3 : std_logic;
+    signal MOSTRA_DADO_DISPLAY : std_logic;
+    signal REGISTRA_PONTO : std_logic;
+    signal REGISTRA_TRACO : std_logic;
     signal ZERA : std_logic;
 begin
-
-  clk: in  std_logic;
-        bitSerial : in std_logic;
-        liga : in std_logic;
-        fimConta4 : in std_logic;
-        fimConta3 : in std_logic;
-        reset: in  std_logic;
-        
-        mostraDadoDisplay : out std_logic;
-        conta4 : out std_logic;
-        conta3 : out std_logic;
-        registraPonto : out std_logic;
-        registraTraco : out std_logic;
-        zera : out std_logic;
-        estadoDepuracao : out std_logic_vector(2 downto 0)
 
     UC : unidadeControleRecepcao port map (clk => CLK,
                                            bitSerial => ENTRADASERIAL,
                                            liga => LIGA,
-                                           fimConta4 => CONTA4,
-                                           fimConta3 => CONTA8,
-                                           fim => FIM,
+                                           fimConta4 => FIM_CONTA4,
+                                           fimConta3 => FIM_CONTA3,
                                            reset => RESET,
-                                           recebeDado => RECEBEDADO,
                                            
-                                           pronto => PRONTO,
-                                           conta => CONTA_UC,
-                                           registra => REGISTRA,
+                                           mostraDadoDisplay => MOSTRA_DADO_DISPLAY,
+                                           conta4 => CONTAR_4,
+                                           conta4 => CONTAR_3,
+                                           registraPonto => REGISTRA_PONTO,
+                                           registraTraco => REGISTRA_TRACO,
                                            zera => ZERA,
-                                           temDado => TEMDADO,
                                            estadoDepuracao => estadoDepuracao
     );
 
+
     Contador : contadorRecepcao port map (clk => CLK,
-                                          conta => CONTA_UC,
+                                          conta4 => CONTAR_4,
+                                          conta3 => CONTAR_3,
                                           reset => ZERA,
 
-                                          fim => FIM,
-                                          conta4 => CONTA4,
-                                          conta8 => CONTA8
+                                          fimConta4 => FIM_CONTA4,
+                                          fimConta3 => FIM_CONTA3
     );
 
     Registrador : registradorRecepcao port map(clk => CLK,
-															  reset => RESET,
-                                               registra => REGISTRA,
-                                               serial => ENTRADASERIAL,
+															                 reset => RESET,
+                                               registraPonto => REGISTRA_PONTO,
+                                               registraTraco => REGISTRA_TRACO,
                                                
                                                dados => DADOS
     );
