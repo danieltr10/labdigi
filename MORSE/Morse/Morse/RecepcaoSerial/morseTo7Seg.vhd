@@ -66,7 +66,7 @@ begin
                     rightHex <= "0000011"; 
                     leftHex <= "1111001"; 
 
-                when "000100001111" => -- L
+                when "000001001111" => -- L
                     rightHex <= "1000110"; 
                     leftHex <= "1111001"; 
 
