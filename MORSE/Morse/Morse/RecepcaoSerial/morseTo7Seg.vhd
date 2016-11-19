@@ -19,11 +19,11 @@ begin
     begin
         if (blank = '1') then
             rightHex <= "1111111";
-            rightHex <= "1111111";
+            leftHex <= "1111111";
         elsif (mostraDadoDisplay = '1') then 
             case valor is
                 when "010011111111" => -- A
-                    rightHex <= "0011001";
+                    rightHex <= "1111001";
                     leftHex <= "0011001"; 
 
                 when "000000011111" => -- B
