@@ -7,10 +7,10 @@ entity Morse is
         CLK : in  std_logic;
         RESET : in  std_logic;
         MORSE : in std_logic;
-        COUNTER : in std_logic;
         LIGA : in std_logic;
         
         SERIAL_OUT : out std_logic;
+        COUNTER : out std_logic;
         ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0);
         PARTIDA_DEPURACAO : out std_logic;
         REGISTRADOR_TRANSMISSAO : out std_logic_vector(55 downto 0)
@@ -18,6 +18,22 @@ entity Morse is
 end entity;
 
 architecture rtl of Morse is
+    
+    component contador_tick is
+        port(
+            clk50MHz, reset : in std_logic;
+            tick880Hz : out std_logic;
+            tick500mHz : out std_logic
+        );
+    end component;
+    
+    component tickDivider is
+        port(
+            tickin880Hz : in std_logic;
+            tickout110Hz : out std_logic
+        );
+    end component;
+    
     component TransmissaoSerial is
         port(
             clk : in std_logic;
@@ -58,6 +74,10 @@ architecture rtl of Morse is
     signal carrega_fim_signal : std_logic;
     signal partida_signal : std_logic;
     signal pronto_transmissao : std_logic;
+    signal ledCounter : std_logic;
+    signal clock880Hz : std_logic;
+    signal clock110Hz : std_logic;
+   
     
 begin
     PARTIDA_DEPURACAO <= partida_signal;
@@ -78,7 +98,7 @@ begin
     );
     
     Transmissao: TransmissaoSerial port map (
-        clk => CLK,
+        clk => clock110Hz,
         reset => RESET,
         partida => partida_signal,
         carrega_ponto => carrega_ponto_signal,
@@ -88,6 +108,18 @@ begin
         dadosserial => SERIAL_OUT,
         pronto => pronto_transmissao,
         registrador_depuracao => REGISTRADOR_TRANSMISSAO
+    );
+    
+    TickGenerator: contador_tick port map (
+        clk50MHz => CLK,
+        reset => RESET,
+        tick880Hz => clock880Hz,
+        tick500mHz => ledCounter
+    );
+    
+    ClockDivider: TickDivider port map (
+        tickin880Hz => clock880Hz,
+        tickout110Hz => clock110Hz
     );
     
 end architecture;
