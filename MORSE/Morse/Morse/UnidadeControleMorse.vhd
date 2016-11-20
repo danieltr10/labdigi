@@ -10,27 +10,46 @@ entity UnidadeControleMorse is
         RESET : in std_logic;
         LIGA : in std_logic;
         PRONTOTRANSMISSAO: in std_logic;
-        
-        CARREGAPONTO : out std_logic;
-        CARREGATRACO : out std_logic;
-        CARREGAFIM : out std_logic;
-        PARTIDA : out std_logic;
+
+        --ModemSignals
         DTR : out std_logic;
-        RTS: out std_logic;
+        --Recep��o
+        CD : in STD_LOGIC;
+        --Transmiss�o
+        CTS : in std_logic;
+        RTS : out std_logic;
+
+
+        carregaPonto : out std_logic;
+        carregaTraco : out std_logic;
+        carregaFim : out std_logic;
+        PARTIDA : out std_logic;
+        ENABLERECEPCAO : out std_logic;
         ESTADO_DEPURACAO : out std_logic_vector(2 downto 0)
     );
 end entity;
 
 architecture rtl of UnidadeControleMorse is
-    TYPE estado is (t0, t1, t2, t3, t4, t5, t6);
+    type estado is (t0, t1, t2, t3, t4, t5, t6);
     signal state : estado := t0;
 	signal last_MORSE : std_logic := '0';
     signal input_detected : std_logic := '0';
     signal counter_contador : std_logic := '0';
 
 begin
+    process (CD)
+    begin
+        ENABLERECEPCAO <= not CD;
+    end process;
+    
+    
+    process (LIGA)
+    begin
+        DTR <= not LIGA;
+    end process;
+
     process (MORSE, CLK, RESET, LIGA, COUNTER)
-    begin 
+    begin
         if (LIGA = '0') then
             state <= t0;
             ESTADO_DEPURACAO <= "000";
@@ -74,8 +93,10 @@ begin
                         state <= t1;
                         ESTADO_DEPURACAO <= "001";
                     when t5 =>
-                        state <= t6;
-                        ESTADO_DEPURACAO <= "110";
+                        if (CTS = '0') then
+                            state <= t6;
+                            ESTADO_DEPURACAO <= "110";
+                        end if;
                     when t6 =>
                         if (PRONTOTRANSMISSAO = '1') then
                             state <= t1;
@@ -86,52 +107,52 @@ begin
             end if;
         end if;
     end process;
-    
+
     process (state) begin
         case state is
             when t0 =>
-                DTR <= '1';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '0';
+                RTS <= '1';
+                carregaPonto <= '0';
+                carregaTraco <= '0';
+                carregaFim <= '0';
                 PARTIDA <= '0';
             when t1 =>
-                DTR <= '0';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '0';
+                RTS <= '1';
+                carregaPonto <= '0';
+                carregaTraco <= '0';
+                carregaFim <= '0';
                 PARTIDA <= '0';
             when t2 =>
-                DTR <= '1';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '0';
+                RTS <= '1';
+                carregaPonto <= '0';
+                carregaTraco <= '0';
+                carregaFim <= '0';
                 PARTIDA <= '0';
             when t3 =>
-                DTR <= '1';
-                CARREGAPONTO <= '1';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '0';
+                RTS <= '1';
+                carregaPonto <= '1';
+                carregaTraco <= '0';
+                carregaFim <= '0';
                 PARTIDA <= '0';
             when t4 =>
-                DTR <= '1';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '1';
-                CARREGAFIM <= '0';
+                RTS <= '1';
+                carregaPonto <= '0';
+                carregaTraco <= '1';
+                carregaFim <= '0';
                 PARTIDA <= '0';
             when t5 =>
-                DTR <= '1';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '1';
+                RTS <= '0';
+                carregaPonto <= '0';
+                carregaTraco <= '0';
+                carregaFim <= '1';
                 PARTIDA <= '0';
             when t6 =>
-                DTR <= '1';
-                CARREGAPONTO <= '0';
-                CARREGATRACO <= '0';
-                CARREGAFIM <= '0';
+                RTS <= '0';
+                carregaPonto <= '0';
+                carregaTraco <= '0';
+                carregaFim <= '0';
                 PARTIDA <= '1';
         end case;
     end process;
-   
+
 end architecture;

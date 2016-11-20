@@ -272,3 +272,4 @@ ModelManifest.xml
 /MORSE/simulation/modelsim
 /MORSE/Waveform1.vwf
 /MORSE/Morse/Morse/TransmissaoSerial/TransmissaoSerial.vhd.bak
+/MORSE/Morse/Morse/contador_tick.vhd.bak

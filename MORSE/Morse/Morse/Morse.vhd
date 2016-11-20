@@ -9,8 +9,20 @@ entity Morse is
         MORSE : in std_logic;
         LIGA : in std_logic;
         
-        SERIAL_OUT : out std_logic;
+        --Modem Signals
+        DTR : out std_logic;
+        --Recepção
+        CD : in std_logic;
+        RD : in std_logic;
+        --Transmissão
+        CTS : in std_logic;
+        RTS : out std_logic;
+        TD : out std_logic;        
+        
         COUNTER : out std_logic;
+        RIGHT_HEX : out std_logic_vector(6 downto 0);
+        LEFT_HEX : out std_logic_vector(6 downto 0);
+        
         ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0);
         PARTIDA_DEPURACAO : out std_logic;
         REGISTRADOR_TRANSMISSAO : out std_logic_vector(55 downto 0)
@@ -31,6 +43,20 @@ architecture rtl of Morse is
         port(
             tickin880Hz : in std_logic;
             tickout110Hz : out std_logic
+        );
+    end component;
+    
+    component RecepcaoSerial is
+        port(
+            clk : in std_logic;
+            liga : in std_logic;
+            reset : in std_logic;
+            entradaSerial : in std_logic;
+            
+            MORSE_DEPURACAO : out std_logic_vector(11 downto 0);
+            right_hex_display : out std_logic_vector(6 downto 0);
+            left_hex_display : out std_logic_vector(6 downto 0);
+            estadoDepuracao : out std_logic_vector(3 downto 0)
         );
     end component;
     
@@ -59,12 +85,19 @@ architecture rtl of Morse is
             liga : in std_logic;
             prontotransmissao : in std_logic;
             
-            carregaponto : out std_logic;
-            carregatraco : out std_logic;
-            carregafim : out std_logic;
+            --ModemSignals
+            dtr : out std_logic;
+            --Recepção
+            cd : in std_logic;
+            --Transmissão
+            cts : in std_logic;
+            rts : out std_logic;
+            
+            carregaPonto : out std_logic;
+            carregaTraco : out std_logic;
+            carregaFim : out std_logic;
             partida : out std_logic;
-            DTR : out std_logic;
-            RTS : out std_logic;
+            enableRecepcao : out std_logic;
             estado_depuracao : out std_logic_vector(2 downto 0)
         );
     end component;
@@ -77,23 +110,34 @@ architecture rtl of Morse is
     signal ledCounter : std_logic;
     signal clock880Hz : std_logic;
     signal clock110Hz : std_logic;
+    signal enableRecepcaoSignal : std_logic;
    
     
 begin
+    COUNTER <= ledCounter;
     PARTIDA_DEPURACAO <= partida_signal;
     
     Controle: UnidadeControleMorse port map (
         clk => CLK,
         morse => MORSE,
-        counter => COUNTER,
+        counter => ledCounter,
         reset => RESET,
         liga => LIGA,
         prontotransmissao => pronto_transmissao,
         
-        carregaponto => carrega_ponto_signal,
-        carregatraco => carrega_traco_signal,
-        carregafim => carrega_fim_signal,
+        --ModemSignals
+        dtr => DTR,
+        --Recepção
+        cd => CD,
+        --Transmissão
+        cts => CTS,
+        rts => RTS,
+        
+        carregaPonto => carrega_ponto_signal,
+        carregaTraco => carrega_traco_signal,
+        carregaFim => carrega_fim_signal,
         partida => partida_signal,
+        enableRecepcao => enableRecepcaoSignal,
         estado_depuracao => ESTADO_TRANSMISSAO
     );
     
@@ -105,9 +149,19 @@ begin
         carrega_traco => carrega_traco_signal,
         carrega_fim => carrega_fim_signal,
         
-        dadosserial => SERIAL_OUT,
+        dadosserial => TD,
         pronto => pronto_transmissao,
         registrador_depuracao => REGISTRADOR_TRANSMISSAO
+    );
+    
+    Recepcao: RecepcaoSerial port map (
+        clk => clock880Hz,
+        liga => LIGA,
+        reset => RESET and enableRecepcaoSignal,
+        entradaSerial => RD,
+        
+        right_hex_display => RIGHT_HEX,
+        left_hex_display => LEFT_HEX
     );
     
     TickGenerator: contador_tick port map (
