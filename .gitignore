@@ -269,3 +269,6 @@ ModelManifest.xml
 /MORSE/Morse/Morse/RecepcaoSerial/contadorRecepcao.vhd.bak
 /MORSE/Morse/Morse/TransmissaoSerial/registradorTransmissao.vhd.bak
 /MORSE/Morse/Morse/Morse.vhd.bak
+/MORSE/simulation/modelsim
+/MORSE/Waveform1.vwf
+/MORSE/Morse/Morse/TransmissaoSerial/TransmissaoSerial.vhd.bak

@@ -4,38 +4,44 @@ library IEEE;
 entity Registrador is
     port (
         clk : in STD_LOGIC;
+        reset : in std_logic;
         desloca : in STD_LOGIC;
         registraponto : in STD_LOGIC; -- data in
         registratraco : in std_logic;
         registrafim : in std_logic;
         
-        serial : out STD_LOGIC -- data
+        serial : out STD_LOGIC; -- data
+        registrador : out std_logic_vector(55 downto 0)
     );
 end Registrador;
 
 architecture estrutural of Registrador is
-    signal ISERIAL : STD_LOGIC_VECTOR (55 downto 0);
+    signal ISERIAL : STD_LOGIC_VECTOR (55 downto 0) := "11111111111111111111111111111111111111111111111111111111";
 
 begin
     process (clk, ISERIAL, desloca, registratraco, registraponto)
     begin
         if (clk'event and clk='1') then
             if (registraponto = '1') then
-                ISERIAL <= ISERIAL(55 downto 8) & "00001111";
+                ISERIAL <= ISERIAL(47 downto 0) & "00001111";
                 serial <= '1';
             elsif (registratraco = '1') then
-                ISERIAL <= ISERIAL(55 downto 12) & "000000001111";
+                ISERIAL <= ISERIAL(43 downto 0) & "000000001111";
                 serial <= '1';
             elsif (registrafim = '1') then
-                ISERIAL <= ISERIAL(55 downto 4) & "1111";
+                ISERIAL <= ISERIAL(51 downto 0) & "1111";
                 serial <= '1';
             elsif (desloca = '1') then
                 serial <= ISERIAL(55);
                 ISERIAL <= ISERIAL(54 downto 0) & '1';
+            elsif (reset = '1') then
+                ISERIAL <= "11111111111111111111111111111111111111111111111111111111";
+                serial <= '1';
             else
                 serial <= '1';
             end if;
         end if;
+        registrador <= ISERIAL;
     end process;
 end estrutural;
 

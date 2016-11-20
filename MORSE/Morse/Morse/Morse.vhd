@@ -11,7 +11,9 @@ entity Morse is
         LIGA : in std_logic;
         
         SERIAL_OUT : out std_logic;
-        ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0)
+        ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0);
+        PARTIDA_DEPURACAO : out std_logic;
+        REGISTRADOR_TRANSMISSAO : out std_logic_vector(55 downto 0)
     );
 end entity;
 
@@ -27,7 +29,8 @@ architecture rtl of Morse is
             
             dadosserial : out std_logic;
             estado_uc : out std_logic_vector(1 downto 0);
-            pronto : out std_logic
+            pronto : out std_logic;
+            registrador_depuracao : out std_logic_vector(55 downto 0)
         );
     end component;
     
@@ -57,6 +60,8 @@ architecture rtl of Morse is
     signal pronto_transmissao : std_logic;
     
 begin
+    PARTIDA_DEPURACAO <= partida_signal;
+    
     Controle: UnidadeControleMorse port map (
         clk => CLK,
         morse => MORSE,
@@ -81,7 +86,8 @@ begin
         carrega_fim => carrega_fim_signal,
         
         dadosserial => SERIAL_OUT,
-        pronto => pronto_transmissao
+        pronto => pronto_transmissao,
+        registrador_depuracao => REGISTRADOR_TRANSMISSAO
     );
     
 end architecture;

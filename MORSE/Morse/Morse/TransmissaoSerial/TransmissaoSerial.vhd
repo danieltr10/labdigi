@@ -15,7 +15,8 @@ entity TransmissaoSerial is
         
         DADOSSERIAL : out std_logic;
         ESTADO_UC: out std_logic_vector(1 downto 0);
-        PRONTO : out std_logic
+        PRONTO : out std_logic;
+        REGISTRADOR_DEPURACAO : out std_logic_vector(55 downto 0)
     );
 end TransmissaoSerial;
 
@@ -44,12 +45,14 @@ architecture estrutural of TransmissaoSerial is
     end component;
     component Registrador is
         port(   clk : in STD_LOGIC;
+        reset : in std_logic;
         desloca: in STD_LOGIC;
         registraponto : in STD_LOGIC;
         registratraco : in std_logic;
         registrafim : in std_logic;
 
-        serial : out STD_LOGIC
+        serial : out STD_LOGIC;
+        registrador : out std_logic_vector(55 downto 0)
         );
     end component;
     signal fim_z :STD_LOGIC; 
@@ -75,10 +78,13 @@ begin
         zera => zera_z, 
         fim => fim_z);
     mod_reg: Registrador port map (clk => CLK, 
+        reset => RESET,
         desloca => desloca_z, 
         registraponto => CARREGA_PONTO,
         registratraco => CARREGA_TRACO, 
         registrafim => CARREGA_FIM, 
-        serial => DADOSSERIAL);
+        serial => DADOSSERIAL,
+        registrador => REGISTRADOR_DEPURACAO
+    );
 
 end estrutural;

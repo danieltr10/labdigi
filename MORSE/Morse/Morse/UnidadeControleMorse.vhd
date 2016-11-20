@@ -24,7 +24,10 @@ end entity;
 architecture rtl of UnidadeControleMorse is
     TYPE estado is (t0, t1, t2, t3, t4, t5, t6);
     signal state : estado := t0;
-	signal last_MORSE : std_logic := '0';  
+	signal last_MORSE : std_logic := '0';
+    signal input_detected : std_logic := '0';
+    signal counter_contador : std_logic := '0';
+
 begin
     process (MORSE, CLK, RESET, LIGA, COUNTER)
     begin 
@@ -42,12 +45,15 @@ begin
                         ESTADO_DEPURACAO <= "001";
                     when t1 =>
                         if (COUNTER = '1') then
+                            counter_contador <= '1';
                             if ((MORSE /= last_MORSE) and (MORSE = '1')) then
                                 state <= t2;
                                 ESTADO_DEPURACAO <= "010";
+							    input_detected <= '1';
+                                counter_contador <= '0';
                             end if;
                             last_MORSE <= MORSE;
-                        elsif (MORSE = last_MORSE) then
+                        elsif (MORSE = last_MORSE and input_detected = '1' and counter_contador = '1') then
                             state <= t5;
                             ESTADO_DEPURACAO <= "101";
                         end if;
@@ -74,6 +80,7 @@ begin
                         if (PRONTOTRANSMISSAO = '1') then
                             state <= t1;
                             ESTADO_DEPURACAO <= "001";
+                            input_detected <= '0';
                         end if;
                 end case;
             end if;
@@ -87,7 +94,7 @@ begin
                 CARREGAPONTO <= '0';
                 CARREGATRACO <= '0';
                 CARREGAFIM <= '0';
-                PARTIDA <= '1';
+                PARTIDA <= '0';
             when t1 =>
                 DTR <= '0';
                 CARREGAPONTO <= '0';
@@ -126,4 +133,5 @@ begin
                 PARTIDA <= '1';
         end case;
     end process;
+   
 end architecture;
