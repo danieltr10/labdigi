@@ -19,10 +19,11 @@ entity Morse is
         RTS : out std_logic;
         TD : out std_logic;        
         
-        COUNTER : in std_logic;
+        COUNTER : out std_logic;
         RIGHT_HEX : out std_logic_vector(6 downto 0);
         LEFT_HEX : out std_logic_vector(6 downto 0);
         
+		  COUNTER_DEPURACAO : out std_logic;
         ESTADO_TRANSMISSAO : out std_logic_vector(2 downto 0);
         PARTIDA_DEPURACAO : out std_logic;
         REGISTRADOR_TRANSMISSAO : out std_logic_vector(55 downto 0)
@@ -114,7 +115,8 @@ architecture rtl of Morse is
    
     
 begin
-    --COUNTER <= ledCounter;
+    COUNTER <= ledCounter;
+	 COUNTER_DEPURACAO <= ledCounter;
     PARTIDA_DEPURACAO <= partida_signal;
     
     Controle: UnidadeControleMorse port map (
@@ -122,6 +124,7 @@ begin
         morse => MORSE,
         counter => ledCounter,
         reset => RESET,
+        --Transmissao
         liga => LIGA,
         prontotransmissao => pronto_transmissao,
         
@@ -129,7 +132,6 @@ begin
         dtr => DTR,
         --Recepcao
         cd => CD,
-        --Transmissao
         cts => CTS,
         rts => RTS,
         
