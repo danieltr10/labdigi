@@ -11,15 +11,15 @@ entity Morse is
         
         --Modem Signals
         DTR : out std_logic;
-        --Recepção
+        --Recepcao
         CD : in std_logic;
         RD : in std_logic;
-        --Transmissão
+        --Transmissao
         CTS : in std_logic;
         RTS : out std_logic;
         TD : out std_logic;        
         
-        COUNTER : out std_logic;
+        COUNTER : in std_logic;
         RIGHT_HEX : out std_logic_vector(6 downto 0);
         LEFT_HEX : out std_logic_vector(6 downto 0);
         
@@ -87,9 +87,9 @@ architecture rtl of Morse is
             
             --ModemSignals
             dtr : out std_logic;
-            --Recepção
+            --Recepcao
             cd : in std_logic;
-            --Transmissão
+            --Transmissao
             cts : in std_logic;
             rts : out std_logic;
             
@@ -114,7 +114,7 @@ architecture rtl of Morse is
    
     
 begin
-    COUNTER <= ledCounter;
+    --COUNTER <= ledCounter;
     PARTIDA_DEPURACAO <= partida_signal;
     
     Controle: UnidadeControleMorse port map (
@@ -127,9 +127,9 @@ begin
         
         --ModemSignals
         dtr => DTR,
-        --Recepção
+        --Recepcao
         cd => CD,
-        --Transmissão
+        --Transmissao
         cts => CTS,
         rts => RTS,
         
@@ -157,7 +157,7 @@ begin
     Recepcao: RecepcaoSerial port map (
         clk => clock880Hz,
         liga => LIGA,
-        reset => RESET and enableRecepcaoSignal,
+        reset => RESET,
         entradaSerial => RD,
         
         right_hex_display => RIGHT_HEX,
